@@ -36,7 +36,7 @@
 
 <body ng-app="starter">
 
-  <ion-pane>
+  <ion-pane ng-controller="ListCtrl">
     <ion-header-bar class="bar-header bar-calm">
       <h1 class="title">Artist List</h1>
     </ion-header-bar>
@@ -45,17 +45,19 @@
           <i class="icon ion-search placeholder-icon"></i>
           <input ng-model="query" type="search" placeholder="Search...">
         </label>
-      <button class="button button-clear button-assertive">Cancel</button>
+      <button ng-click="data.showReorder = !data.showReorder" class="button button-icon ion-navicon"></button>
     </div>
 
 
-    <ion-content ng-controller="ListCtrl" class="has-subheader">
-      <ion-list ng-repeat="item in artists | filter: query">
-        <ion-item class="item-thumbnail-left item-text-wrap">
+    <ion-content class="has-subheader">
+      <ion-list show-reorder="data.showReorder">
+        <ion-item ng-repeat="item in artists | filter: query" class="item-thumbnail-left item-text-wrap">
           <img src="{{item.pic}}" alt="Image">
           <h2>{{item.name}}</h2>
           <h2>{{item.reknown}}</h2>
           <p>{{item.bio | limitTo: 150}}{{item.bio.length > 100 ? '...' : ''}}</p>
+          <ion-reorder-button class="ion-navicon" on-reorder="moveItem(item, $fromIndex, $toIndex)">
+          </ion-reorder-button>
         </ion-item>
       </ion-list>
     </ion-content>
