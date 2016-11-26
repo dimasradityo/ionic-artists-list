@@ -37,25 +37,43 @@
 <body ng-app="starter">
 
   <ion-pane ng-controller="ListCtrl">
+    <!--App header-->
     <ion-header-bar class="bar-header bar-calm">
+      <!--Delete button and function for list items-->
+      <button ng-click="data.showDelete = !data.showDelete; data.showReorder = false;" class="button button-icon ion-minus-circled"></button>
       <h1 class="title">Artist List</h1>
+      <!--Reorder button and functionality for list items-->
+      <button ng-click="data.showReorder = !data.showReorder; data.showDelete = false;" class="button button-icon ion-navicon"></button>
     </ion-header-bar>
+
+    <!--Subheader-->
     <div class="bar bar-subheader item item-input-inset">
       <label class="item-input-wrapper">
           <i class="icon ion-search placeholder-icon"></i>
           <input ng-model="query" type="search" placeholder="Search...">
         </label>
-      <button ng-click="data.showReorder = !data.showReorder" class="button button-icon ion-navicon"></button>
+        <button class="button button-clear button-assertive">Cancel</button>
     </div>
 
 
     <ion-content class="has-subheader">
-      <ion-list show-reorder="data.showReorder">
-        <ion-item ng-repeat="item in artists | filter: query" class="item-thumbnail-left item-text-wrap">
-          <img src="{{item.pic}}" alt="Image">
+      <!--Swipe to refresh function-->
+      <ion-refresher on-refresh="doRefresh()"></ion-refresher>
+      <!--List of items and show functionality conditions-->
+      <ion-list show-reorder="data.showReorder" show-delete="data.showDelete">
+        <!--Individual item options-->
+        <ion-item ng-class="{'star': item.star}"ng-repeat="item in artists | filter: query" class="item-thumbnail-left item-text-wrap item-icon-right">
+          <img ng-src="{{item.pic}}" alt="Image">
           <h2>{{item.name}}</h2>
-          <h2>{{item.reknown}}</h2>
+          <h2>{{item.reknown}}</h2>          
           <p>{{item.bio | limitTo: 150}}{{item.bio.length > 100 ? '...' : ''}}</p>
+          <button class="button button-clear icon ion-star button-assertive" ng-click="toggleStar(item)" ng-show="item.star"></button>
+          <!--Swipe left on item to show-->
+          <ion-option-button class="button-dark" ng-click="toggleStar(item)">
+            <i class="icon ion-star"></i>
+          </ion-option-button>
+          <!--Actual buttons for the delete and reorder functions-->
+          <ion-delete-button class="ion-minus-circled" ng-click="onItemDelete(item)"></ion-delete-button>
           <ion-reorder-button class="ion-navicon" on-reorder="moveItem(item, $fromIndex, $toIndex)">
           </ion-reorder-button>
         </ion-item>

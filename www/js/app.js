@@ -26,6 +26,22 @@ angular.module('starter', ['ionic'])
 .controller('ListCtrl', ['$scope', '$http', function($scope, $http){
   $http.get('js/data.json').success(function(data){
     $scope.artists = data;
+
+    $scope.onItemDelete = function(item){
+      $scope.artists.splice($scope.artists.indexOf(item), 1);
+    }
+
+    $scope.toggleStar = function(item){
+      item.star = !item.star;
+    }
+
+    $scope.doRefresh = function(){
+      $http.get('js/data.json').success(function(data){
+        $scope.artists = data;
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    }
+
     $scope.moveItem = function(item, fromIndex, toIndex){
       $scope.artists.splice(fromIndex, 1);
       $scope.artists.splice(toIndex, 0, item);
